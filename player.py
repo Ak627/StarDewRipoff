@@ -22,11 +22,13 @@ class Player(pygame.sprite.Sprite): #this is a child class of pygames sprite cla
         self.pos = pygame.math.Vector2(self.rect.center)# player, (x,y) position
         self.speed = 200
         #timers
+
         self.timers = { #dictionary
             "tool use": Timer(350, self.use_tool)
         }
         #tools
         self.selected_tool = "axe"
+
     def use_tool(self):
         print(self.selected_tool)
 
@@ -68,6 +70,7 @@ class Player(pygame.sprite.Sprite): #this is a child class of pygames sprite cla
                 self.status = "right"
             else:
               self.direction.x = 0
+
         #tool use
             if keys[pygame.K_SPACE]:
                 self.timers['tool use'].activate()
@@ -86,7 +89,7 @@ class Player(pygame.sprite.Sprite): #this is a child class of pygames sprite cla
 
     def update_timers(self):
         for timer in self.timers.values():
-            timer.update
+            timer.update()
 
     def move(self, dt):
         if self.direction.magnitude() > 0:#can't normalize vectors with length of 0
