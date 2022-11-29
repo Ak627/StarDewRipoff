@@ -13,6 +13,7 @@ class Player(pygame.sprite.Sprite): #this is a child class of pygames sprite cla
         #general setup
         self.image = self.animations[self.status][self.frame_index] #access the dictionary
         self.rect = self.image.get_rect(center = pos) #set the position to be the center of the rect
+        self.z = LAYERS["main"]
         #self.image = pygame.Surface((32,64))
         #self.image.fill('green')
         #self.rect = self.image.get_rect(center = pos) # set the position to be the center of the rect
@@ -24,14 +25,26 @@ class Player(pygame.sprite.Sprite): #this is a child class of pygames sprite cla
         #timers
 
         self.timers = { #dictionary
-            "tool use": Timer(350, self.use_tool)
+            "tool use": Timer(350, self.use_tool),
+            "tool switch": Timer(200),
+            "seed use": Timer(350, self.use_seed),
+            "seed switch": Timer(200)
         }
+
         #tools
-        self.selected_tool = "axe"
+        self.tools = ['hoe', 'axe', 'water']
+        self.tool_index = 0#default value is 
+        self.selected_tool = self.tools[self.tool_index]
+
+        #seeds
+        self.seeds = ["corn", "tomato"]
+        self.seed_index = 0
+        self.selected_seed = self.seeds[self.seed_index]
 
     def use_tool(self):
         print(self.selected_tool)
-
+    def use_seed(self):
+        print(self.selected_seed)
     def import_assets(self):
         self.animations = {'up':[], 'down':[], 'left':[], 'right':[],
                            'right_idle':[], 'left_idle':[], 'up_idle':[], 'down_idle':[],
@@ -76,6 +89,25 @@ class Player(pygame.sprite.Sprite): #this is a child class of pygames sprite cla
                 self.timers['tool use'].activate()
                 self.direction = pygame.math.Vector2()
                 self.frame_index = 0
+        #change tool
+            if keys[pygame.K_q] and not self.timers["tool switch"].active:
+                self.timers["tool switch"].activate()
+                self.tool_index += 1
+                self.tool_index = self.tool_index if self.tool_index < len(self.tools) else 0
+                self.selected_tool = self.tools[self.tool_index]
+        #seed use
+            if keys[pygame.K_LCTRL]:
+                self.timers['seed use'].activate()
+                self.direction = pygame.math.Vector2()
+                self.frame_index = 0
+                print("use seed")
+        #change seed
+            if keys[pygame.K_e] and not self.timers["seed switch"].active:
+                self.timers["seed switch"].activate()
+                self.seed_index += 1
+                self.seed_index = self.seed_index if self.seed_index < len(self.seeds) else 0
+                self.selected_seed = self.seeds[self.seed_index]
+                print(self.selected_seed)
 
     def get_status(self):
         #check if the player is not moving:
